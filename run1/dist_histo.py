@@ -1,18 +1,28 @@
+import sys
+import string
 from pyMCDS import pyMCDS
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
 matplotlib.use("TkAgg")
 
+argc=len(sys.argv)
+print('argv=',sys.argv)
+print('argv[0]=',sys.argv[0])
+#p1=string.atof(sys.argv[1])
+
 #mcds = pyMCDS('output00000000.xml','output');
-mcds = pyMCDS('output00000002.xml')
-mcds = pyMCDS('output00000001.xml')
+#mcds = pyMCDS('output00000002.xml')
+fname = "output%08d.xml" % int(sys.argv[1])
+#fname += '.xml'
+mcds = pyMCDS(fname)
 
 #In [7]: mcds.data['discrete_cells'].keys()
 #Out[7]: dict_keys(['ID', 'position_x', 'position_y', 'position_z', 'total_volume', 'cell_type', 'cycle_model', 'current_phase', 'elapsed_time_in_phase', 'nuclear_volume', 'cytoplasmic_volume', 'fluid_fraction', 'calcified_fraction', 'orientation_x', 'orientation_y', 'orientation_z', 'polarity', 'migration_speed', 'motility_vector_x', 'motility_vector_y', 'motility_vector_z', 'migration_bias', 'motility_bias_direction_x', 'motility_bias_direction_y', 'motility_bias_direction_z', 'persistence_time', 'motility_reserved', 'receptor', 'elastic_coefficient'])
 
 
-t=mcds.get_time()
+tval = int(mcds.get_time())
+print('time = ',tval)
 cx = mcds.data['discrete_cells']['position_x']
 cy = mcds.data['discrete_cells']['position_y']
 print('x size =',cx.size)
@@ -61,7 +71,7 @@ print('receptor (custom_data) value = ', receptor)
 dist2_max = 0.0
 for idx in range(15, len(receptor)):
     # if ((cell_type[idx] == 1) and (receptor[idx] == 0)):  # have I reached a director cell?
-    if (cell_type[idx] == 1):  
+    if (cell_type[idx] == 1):    # cargo?
         cx_cell = cx[idx]
         cy_cell = cy[idx]
         dist2_min = 1.e6
@@ -89,7 +99,13 @@ num_bins = 40
 #counts, bins = np.histogram(dist_cargo)
 #plt.hist(bins[:-1], bins, weights=counts)
 #plt.hist(dist_cargo, bins='auto')
-bins = np.arange(0,400,25)
+bins = np.arange(0,500,25)
 #plt.hist(dist_cargo, bins='auto')
 plt.hist(dist_cargo, bins=bins)
+plt.xlim(left=0)
+plt.ylim(top=180)
+title_str = str(tval) + ' mins' 
+plt.title(title_str)
+plt.xlabel('Histogram: distance(cargo cell, nearest director)')
+plt.ylabel('# of cargo cells')
 plt.show()
