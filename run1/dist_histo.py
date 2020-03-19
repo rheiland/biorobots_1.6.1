@@ -1,6 +1,8 @@
 from pyMCDS import pyMCDS
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.use("TkAgg")
 
 #mcds = pyMCDS('output00000000.xml','output');
 mcds = pyMCDS('output00000002.xml')
@@ -58,7 +60,8 @@ print('receptor (custom_data) value = ', receptor)
 #for idx in range(15, len(receptor)):
 dist2_max = 0.0
 for idx in range(15, len(receptor)):
-    if ((cell_type[idx] == 1) and (receptor[idx] == 0)):  # have I reached a director cell?
+    # if ((cell_type[idx] == 1) and (receptor[idx] == 0)):  # have I reached a director cell?
+    if (cell_type[idx] == 1):  
         cx_cell = cx[idx]
         cy_cell = cy[idx]
         dist2_min = 1.e6
@@ -80,5 +83,13 @@ print('dist_cargo = ', dist_cargo)
 
 #print(cx.size,cy.size,cell_type.size, receptor.size)
 
-n, bins, patches = plt.hist(dist_cargo, 4, density=True, facecolor='g', alpha=0.75)
+num_bins = 40
+#plt.xlim(0, 100,10)
+#n, bins, patches = plt.hist(dist_cargo, num_bins, density=True, facecolor='g', alpha=0.75)
+#counts, bins = np.histogram(dist_cargo)
+#plt.hist(bins[:-1], bins, weights=counts)
+#plt.hist(dist_cargo, bins='auto')
+bins = np.arange(0,400,25)
+#plt.hist(dist_cargo, bins='auto')
+plt.hist(dist_cargo, bins=bins)
 plt.show()
